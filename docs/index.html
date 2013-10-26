@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Geno</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h1">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h1>Geno</h1>
+<p>A small static and opinionated site generator.</p>
+<p><strong>Geno</strong> is a small and opinionated static site generator
+for easily generating a simple project site for your NPM modules.</p>
+<p><strong>License:</strong> MIT<br><strong>Source:</strong> <a href="https://github.com/gummesson/geno">GitHub</a></p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h2">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <h2>geno.js</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <h3>Modules</h3>
+<p>Import the required modules.</p>
+<ul>
+<li><code>nunjucks</code> is the default template engine.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">var</span> nunjucks = require(<span class="string">'nunjucks'</span>),
+    Get      = require(<span class="string">'./utils/get'</span>),
+    get      = <span class="keyword">new</span> Get(),
+    File     = require(<span class="string">'./utils/file'</span>),
+    file     = <span class="keyword">new</span> File(),
+    Extend   = require(<span class="string">'./utils/extend'</span>),
+    extend   = <span class="keyword">new</span> Extend();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <h3>Geno</h3>
+<p>The constructor.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">var</span> Geno = <span class="keyword">function</span>() {};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <h4>Geno.prototype.build</h4>
+<p>Run through the configuration, the parsing and the compiling of the site.</p>
+<ul>
+<li><code>done</code> is a function.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>Geno.prototype.build = <span class="keyword">function</span>(done) {
+  done = (done || <span class="keyword">function</span>() {});
+  <span class="keyword">this</span>.configure(<span class="keyword">function</span>(config) {
+    <span class="keyword">this</span>.template(config, <span class="keyword">function</span>(err, data) {
+    <span class="keyword">if</span> (err) { <span class="keyword">return</span> done(err); }
+      <span class="keyword">this</span>.compile(config, data, <span class="keyword">function</span>(err) {
+        <span class="keyword">if</span> (err) { <span class="keyword">return</span> done(err); }
+        <span class="keyword">return</span> done();
+      });
+    }.bind(<span class="keyword">this</span>));
+  }.bind(<span class="keyword">this</span>));
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <h4>Geno.prototype.configure</h4>
+<p>Return the <code>config</code> by reading the project&#39;s <code>package.json</code> file and
+the project&#39;s <code>geno.json</code> file, if it exists.</p>
+<ul>
+<li><code>callback</code> is a function.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>Geno.prototype.configure = <span class="keyword">function</span>(callback) {
+  <span class="keyword">var</span> pkgPath = get.path(process.cwd(), <span class="string">'package.json'</span>),
+      pkgInfo = require(pkgPath),
+      genPath = get.path(process.cwd(), <span class="string">'geno.json'</span>);
+  file.exists(genPath, <span class="keyword">function</span>(exists) {
+    <span class="keyword">if</span> (exists) {
+      <span class="keyword">var</span> genInfo = require(genPath),
+          config  = extend.obj(pkgInfo, genInfo);
+      <span class="keyword">return</span> callback(config);
+    } <span class="keyword">else</span> {
+      <span class="keyword">return</span> callback(pkgInfo);
+    }
+  });
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <h4>Geno.prototype.template</h4>
+<p>Return the template file&#39;s <code>data</code>.</p>
+<ul>
+<li><code>config</code>   is an object.</li>
+<li><code>callback</code> is a function.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>Geno.prototype.template = <span class="keyword">function</span>(config, callback) {
+  <span class="keyword">var</span> index = (config.template || get.lib(<span class="string">'template/index.html'</span>));
+  file.read(index, <span class="keyword">function</span>(err, data) {
+    <span class="keyword">if</span> (err) { <span class="keyword">return</span> callback(err); }
+    <span class="keyword">return</span> callback(<span class="literal">null</span>, data);
+  });
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <h4>Geno.prototype.compile</h4>
+<p>Compile the content by running the <code>data</code> and <code>config</code> through <code>nunjucks</code>.</p>
+<ul>
+<li><code>config</code>   is an object.</li>
+<li><code>data</code>     is a string.</li>
+<li><code>callback</code> is a function.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>Geno.prototype.compile = <span class="keyword">function</span>(config, data, callback) {
+  <span class="keyword">var</span> content = nunjucks.renderString(data, config),
+      style   = (config.stylesheet || get.lib(<span class="string">'template/style.css'</span>)),
+      output  = (config.output || get.path(process.cwd(), <span class="string">'site'</span>));
+  <span class="keyword">this</span>.generate(content, output, style, <span class="keyword">function</span>(err) {
+      <span class="keyword">if</span> (err) { <span class="keyword">return</span> callback(err); }
+      <span class="keyword">return</span> callback(<span class="literal">null</span>);
+  });
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <h4>Geno.prototype.generate</h4>
+<p>Generate the site by creating the <code>output</code> directory, saving
+the <code>index.html</code> file and copying the <code>style.css</code> file.</p>
+<ul>
+<li><code>content</code>  is a string.</li>
+<li><code>output</code>   is a string.</li>
+<li><code>style</code>    is a string.</li>
+<li><code>callback</code> is a function.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>Geno.prototype.generate = <span class="keyword">function</span>(content, output, style, callback) {
+  <span class="keyword">var</span> index = get.path(output, <span class="string">'index.html'</span>),
+      css   = get.path(output, <span class="string">'style.css'</span>);
+  file.mkDir(output, <span class="keyword">function</span>(err) {
+    <span class="keyword">if</span> (err) { <span class="keyword">return</span> callback(err); }
+    file.save(index, content, <span class="keyword">function</span>() {
+      <span class="keyword">if</span> (err) { <span class="keyword">return</span> callback(err); }
+      file.copy(style, css, <span class="keyword">function</span>(err) {
+        <span class="keyword">if</span> (err) { <span class="keyword">return</span> callback(err); }
+        <span class="keyword">return</span> callback(<span class="literal">null</span>);
+      });
+    });
+  });
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <h3>Exports</h3>
+<p>Export <code>Geno</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>module.exports = Geno;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h2">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <h2>utils/get.js</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <h3>Modules</h3>
+<p>Import the required modules.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">var</span> path = require(<span class="string">'path'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <h3>Get</h3>
+<p>The constructor.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">var</span> Get = <span class="keyword">function</span>() {};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <h4>Get.prototype.path</h4>
+<p>Return the full path of <code>filename</code>.</p>
+<ul>
+<li><code>directory</code> is a string.</li>
+<li><code>filename</code> is a string.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>Get.prototype.path = <span class="keyword">function</span>(directory, filename) {
+  <span class="keyword">return</span> path.join(directory, <span class="string">'/'</span>, filename);
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <h4>Get.prototype.lib</h4>
+<p>Return the full path to the module library.</p>
+<ul>
+<li><code>filename</code> is a string.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>Get.prototype.lib = <span class="keyword">function</span>(filename) {
+  <span class="keyword">return</span> path.join(__dirname, <span class="string">'../../'</span>, filename);
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <h3>Exports</h3>
+<p>Export <code>Get</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>module.exports = Get;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h2">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <h2>utils/extend.js</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <h3>Extend</h3>
+<p>The constructor.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">var</span> Extend = <span class="keyword">function</span>() {};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <h4>Extend.prototype.obj</h4>
+<p>Return a single object by combining two into one.</p>
+<ul>
+<li><code>target</code>  is an object.</li>
+<li><code>options</code> is an object.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>Extend.prototype.obj = <span class="keyword">function</span>(target, options) {
+  <span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">in</span> options) {
+    <span class="keyword">if</span> (options.hasOwnProperty(key)) {
+      <span class="keyword">if</span> (options[key] !== <span class="literal">undefined</span>) {
+        target[key] = options[key];
+      }
+    }
+  }
+  <span class="keyword">return</span> target;
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <h3>Exports</h3>
+<p>Export <code>Extend</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>module.exports = Extend;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h2">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <h2>utils/file.js</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <h3>Modules</h3>
+<p>Import the required modules.</p>
+<ul>
+<li><code>fs-extra</code> enables some extra <code>fs</code> goodies, like <code>copy</code> and <code>mkdirp</code>.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">var</span> fs = require(<span class="string">'fs-extra'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <h3>File</h3>
+<p>The constructor.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">var</span> File = <span class="keyword">function</span>() {};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <h4>File.prototype.read</h4>
+<p>Read the <code>file</code> (synchronously) and return the data.</p>
+<ul>
+<li><code>file</code>     is a string.</li>
+<li><code>callback</code> is a function.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>File.prototype.read = <span class="keyword">function</span>(file, callback) {
+  <span class="keyword">try</span> {
+    <span class="keyword">var</span> data = fs.readFileSync(file, { encoding: <span class="string">'utf8'</span> });
+    <span class="keyword">return</span> callback(<span class="literal">null</span>, data);
+  } <span class="keyword">catch</span>(err) {
+    <span class="keyword">return</span> callback(err);
+  }
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <h4>File.prototype.save</h4>
+<p>Save the <code>file</code> and <code>content</code> (synchronously).</p>
+<ul>
+<li><code>file</code>     is a string.</li>
+<li><code>content</code>  is a string.</li>
+<li><code>callback</code> is a function.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>File.prototype.save = <span class="keyword">function</span>(file, content, callback) {
+  <span class="keyword">try</span> {
+    fs.writeFileSync(file, content, { encoding: <span class="string">'utf8'</span> });
+    <span class="keyword">return</span> callback(<span class="literal">null</span>);
+  } <span class="keyword">catch</span>(err) {
+    <span class="keyword">return</span> callback(err);
+  }
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <h4>File.prototype.copy</h4>
+<p>Copy the <code>target</code> to the <code>destination</code> (synchronously).</p>
+<ul>
+<li><code>target</code>      is a string.</li>
+<li><code>destination</code> is a string.</li>
+<li><code>callback</code>    is a function.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>File.prototype.copy = <span class="keyword">function</span>(target, destination, callback) {
+  <span class="keyword">try</span> {
+    fs.copySync(target, destination);
+    <span class="keyword">return</span> callback(<span class="literal">null</span>);
+  } <span class="keyword">catch</span>(err) {
+    <span class="keyword">return</span> callback(err);
+  }
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <h4>File.prototype.exists</h4>
+<p>Check if the <code>path</code> exists (synchronously).</p>
+<ul>
+<li><code>path</code> is a string.</li>
+<li><code>callback</code> is a function.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>File.prototype.exists = <span class="keyword">function</span>(path, callback) {
+  <span class="keyword">var</span> exists = fs.existsSync(path);
+  <span class="keyword">return</span> callback(exists);
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-28">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-28">&#182;</a>
+              </div>
+              <h4>File.prototype.mkDir</h4>
+<p>Create the <code>path</code> (synchronously).</p>
+<ul>
+<li><code>path</code>     is a string.</li>
+<li><code>callback</code> is a function.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>File.prototype.mkDir = <span class="keyword">function</span>(path, callback) {
+  <span class="keyword">try</span> {
+    <span class="keyword">this</span>.exists(path, <span class="keyword">function</span>(exists) {
+      <span class="keyword">if</span> (!exists) { fs.mkdirpSync(path); }
+      <span class="keyword">return</span> callback(<span class="literal">null</span>);
+    });
+  } <span class="keyword">catch</span>(err) {
+    <span class="keyword">return</span> callback(err);
+  }
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-29">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-29">&#182;</a>
+              </div>
+              <h3>Exports</h3>
+<p>Export <code>File</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>module.exports = File;</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
