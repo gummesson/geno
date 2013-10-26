@@ -18,13 +18,11 @@
     <div class="island">
       <div class="wrapper  wrapper--banner">
         <h1 class="billboard__title">
-          <a class="billboard__link  link--hidden" href="/">
-          {% if title -%}
-            {{ title }}
-          {% else -%}
-            {{ name }}
-          {% endif -%}
-          </a>
+        {% if title -%}
+          {{ title }}
+        {% else -%}
+          {{ name }}
+        {% endif -%}
         </h1>
         <p class="billboard__print">
           {{ description }}
@@ -117,9 +115,6 @@
             {% endif -%}
           {% endif -%}
         {% endif -%}
-      </div>
-    </div>
-  </article>
 
   <footer class="billboard  billboard--foot">
     <div class="islet">
