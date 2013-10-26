@@ -1,5 +1,9 @@
 # Geno
 
+[![NPM version](https://badge.fury.io/js/geno.png)](http://badge.fury.io/js/geno)
+[![Dependency Status](https://gemnasium.com/gummesson/geno.png)](https://gemnasium.com/gummesson/geno)
+[![Build Status](https://travis-ci.org/gummesson/geno.png?branch=master)](https://travis-ci.org/gummesson/geno)
+
 **Geno** is a small and opinionated static site generator for easily generating a simple site for your [NPM](https://npmjs.org/) projects based on the project's `package.json` file.
 
 ## Why?
