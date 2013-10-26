@@ -1,0 +1,32 @@
+#!/usr/bin/env node
+
+/* Modules */
+
+var pkg  = require('../package.json'),
+    Geno = require('../lib/geno'),
+    geno = new Geno();
+
+/* Initialization */
+
+var argv = process.argv.slice(2),
+    args = argv[0];
+
+if (!argv.length) {
+  geno.build(function(err) {
+    if (err) { throw err; }
+    console.log('Done!');
+  });
+} else {
+  if (args === '-V' || args === '--version') {
+    console.log(pkg.version);
+  } else {
+    console.log();
+    console.log('  Usage: geno [options]');
+    console.log();
+    console.log('  Options:');
+    console.log();
+    console.log('    -h, --help             output usage information');
+    console.log('    -V, --version          output the version number');
+    console.log();
+  }
+}

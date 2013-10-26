@@ -1,0 +1,41 @@
+{
+  "name": "geno",
+  "version": "0.1.0",
+  "description": "A small and opinionated static site generator.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gummesson/geno.git"
+  },
+  "author": "Ellen Gummesson",
+  "license": "MIT",
+  "preferGlobal": "true",
+  "main": "./lib/geno",
+  "bin": {
+    "geno": "./bin/geno"
+  },
+  "keywords": [
+    "html",
+    "static",
+    "generator",
+    "builder"
+  ],
+  "scripts": {
+    "test": "grunt test"
+  },
+  "dependencies": {
+    "nunjucks": "~1.0.0",
+    "fs-extra": "~0.8.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "matchdep": "~0.3.0",
+    "grunt-contrib-jshint": "~0.6.4",
+    "grunt-contrib-sass": "~0.5.0",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-shell": "~0.5.0",
+    "grunt-simple-mocha": "~0.4.0",
+    "must": "~0.6.0"
+  }
+}

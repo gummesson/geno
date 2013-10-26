@@ -1,0 +1,8 @@
+{
+  "title"        : "Geno",
+  "introduction" : "<p><b>Geno</b> is a small and opinionated static site generator for easily generating a simple site for your <a href=\"https://npmjs.org/\" \"Node Packaged Modules\">NPM</a> projects based on the project's <code>package.json</code> file.</p><p>Believe it or not, but this site is actually generated with it. How meta!</p>",
+  "installation" : "<p>All you have to do after the installation is to run the following in the root directory of your project: </p><pre><code>geno</code></pre><b>BOOM!</b> Your project site has been generated.",
+  "usage"        : "<p>Adding a <code>geno.json</code> in your project's root directory will enable you to add some additional information to your site.</p>",
+  "docco"        : "docs/index.html",
+  "endorse"      : true
+}

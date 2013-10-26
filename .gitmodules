@@ -1,0 +1,3 @@
+[submodule "assets/geno-template"]
+	path = assets/geno-template
+	url = https://github.com/gummesson/geno-template.git

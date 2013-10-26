@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  {% if title -%}
+  <title>{{ title }}</title>
+  {% else -%}
+  <title>{{ name }}</title>
+  {% endif -%}
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link href="style.css" rel="stylesheet">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <header class="billboard  billboard--head">
+    <div class="island">
+      <div class="wrapper  wrapper--banner">
+        <h1 class="billboard__title">
+          <a class="billboard__link  link--hidden" href="/">
+          {% if title -%}
+            {{ title }}
+          {% else -%}
+            {{ name }}
+          {% endif -%}
+          </a>
+        </h1>
+        <p class="billboard__print">
+          {{ description }}
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <article class="page">
+    <div class="island">
+      <div class="wrapper">
+      {% if title -%}
+        <h1>{{ title }}</h1>
+      {% else -%}
+        <h1>{{ name }}</h1>
+      {% endif -%}
+      {% if introduction -%}
+        {{ introduction }}
+      {% else -%}
+        <p>{{ description }}</p>
+      {% endif -%}
+      {% if docco -%}
+        <p>
+          <a href="{{ docco }}">The annotated source code is available</a>.
+        </p>
+      {% endif -%}
+
+        <h2>Information</h2>
+        <ul class="obj-list">
+          <li>
+            <span class="obj-list__key">Version:</span> {{ version }}
+          </li>
+          {% if author -%}
+          <li>
+            <span class="obj-list__key">Author:</span> {{ author }}
+          </li>
+          {% endif -%}
+          <li>
+            <span class="obj-list__key">License:</span>
+            {% if licenses -%}
+              <a href="{{ licenses.url }}">{{ licenses.type }}</a>
+            {% else -%}
+              <a href="http://opensource.org/licenses/{{ license }}">{{ license }}</a>
+            {% endif -%}
+          </li>
+          {% if repository -%}
+            {% if repository.url -%}
+            <li>
+              <span class="obj-list__key">Repository:</span> <a href="{{ repository.url }}">{{ repository.type }}</a>
+            </li>
+            {% endif -%}
+          {% endif -%}
+          <li>
+            <span class="obj-list__key">Registry:</span> <a href="https://npmjs.org/package/{{ name }}">{{ name }}</a>
+          </li>
+          {% if keywords -%}
+          <li>
+            <span class="obj-list__key">Keywords:</span>
+            {% for keyword in keywords | sort -%}
+              <a href="https://npmjs.org/browse/keyword/{{ keyword }}">{{ keyword }}</a>{% if loop.last %}{% else %}, {% endif %}
+            {% endfor -%}
+          </li>
+          {% endif -%}
+          {% if dependencies -%}
+            <li>
+            <span class="obj-list__key">Dependencies:</span>
+            {% for depname, depversion in dependencies | dictsort -%}
+              <a href="https://npmjs.org/package/{{ depname }}">{{ depname }}</a>{% if loop.last %}{% else %}, {% endif %}
+            {% endfor -%}
+            </li>
+          {% endif -%}
+        </ul>
+
+        <h2>Installation</h2>
+        {% if preferGlobal -%}
+          <pre><code>npm install -g {{ name }}</code></pre>
+        {% else -%}
+          <pre><code>npm install {{ name }}</code></pre>
+        {% endif -%}
+        {% if installation -%}
+          {{ installation }}
+        {% endif -%}
+
+        {% if usage -%}
+        <h2>Usage</h2>
+          {{ usage }}
+          {% if repository -%}
+            {% if repository.url -%}
+            <p>For more information, go to <a href="{{ repository.url }}">the source code repository</a>.</p>
+            {% endif -%}
+          {% endif -%}
+        {% endif -%}
+      </div>
+    </div>
+  </article>
+
+  <footer class="billboard  billboard--foot">
+    <div class="islet">
+    {% if endorse -%}
+      <div class="wrapper  wrapper--banner">
+        <p class="billboard__print  print--small">
+          <a class="billboard__link" href="https://github.com/gummesson/geno">Built with Geno</a>
+        </p>
+      </div>
+    {% endif -%}
+    </div>
+  </footer>
+</body>
+</html>
