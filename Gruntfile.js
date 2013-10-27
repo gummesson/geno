@@ -51,7 +51,7 @@ module.exports = function(grunt) {
       ],
 
       dest: 'tmp/index.js',
-      build: 'docco --output docs tmp/index.js'
+      build: 'docco --output site/docs tmp/index.js'
     },
 
     site: {
@@ -131,15 +131,6 @@ module.exports = function(grunt) {
     },
 
     copy: {
-      docs: {
-        files: [{
-          expand: true,
-          cwd:'docs/',
-          src: ['**'],
-          dest: '<%= project.site.dest %>/docs/'
-        }]
-      },
-
       site: {
         files: [{
           expand: true,
@@ -166,7 +157,6 @@ module.exports = function(grunt) {
   grunt.registerTask('site', [
     'concat:js',
     'shell:docs',
-    'copy:docs',
     'shell:site',
     'copy:site'
   ]);
