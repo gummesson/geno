@@ -1,6 +1,6 @@
 {
   "name": "geno",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A small and opinionated static site generator.",
   "repository": {
     "type": "git",
