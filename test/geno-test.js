@@ -13,7 +13,6 @@ describe('Geno', function() {
     it('must build the site', function(done) {
       geno.build(function() {
         fsExists('site/index.html').must.be.true();
-        fsExists('site/style.css').must.be.true();
         done();
       });
     });
@@ -21,13 +20,20 @@ describe('Geno', function() {
     // Since `nunjucks` affects the whitespace formatting 
     // the test unfortunately has to check for template tags 
     // instead of comparing the actual content.
-    it('must build all of the content', function(done) {
+    it('must generate the content', function(done) {
       fs.readFile('site/index.html', {encoding: 'utf8'}, function(err, data) {
         var pattern = /\{(\{|%-?)\s+.*\s+(-?%|\})\}/g,
             tags    = pattern.test(data);
         if (err) { throw err; }
         data.must.exist();
         tags.must.be.false();
+        done();
+      });
+    });
+
+    it('must copy the assets', function(done) {
+      geno.build(function() {
+        fsExists('site/style.css').must.be.true();
         done();
       });
     });
