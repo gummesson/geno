@@ -39,6 +39,7 @@ Adding a `geno.json` in your project's root directory will enable you to add som
   "output": "path/to/ouput",
   "template": "path/to/custom/template",
   "stylesheet": "path/to/custom/stylesheet",
+  "javascript": "path/to/javascript/file",
   "docco": "path/to/docs",
   "endorse": true
 }
@@ -51,6 +52,7 @@ Adding a `geno.json` in your project's root directory will enable you to add som
 - `output` is where the site will be generated. The default directory is `site`.
 - `template` is used for using your own custom template file.
 - `stylesheet` is used for using your own custom stylesheet file.
+- `javascript` is for adding a JavaScript file to your site.
 - `docco` is for simply linking to your [Docco](https://github.com/jashkenas/docco)-generated documentation.
 - `endorse` adds a link to this repository in site's footer. It's turned off by default.
 
