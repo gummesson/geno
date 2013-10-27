@@ -9,8 +9,9 @@ var must = require('must'),
 
 describe('Get', function() {
   var test = {
-    json  : 'geno.json',
-    index : 'assets/index.html'
+    json   : 'geno.json',
+    index  : 'assets/index.html',
+    script : 'assets/js/script.js'
   };
 
   describe('.path()', function() {
@@ -26,6 +27,13 @@ describe('Get', function() {
       var filePath = get.lib(test.index),
           realPath = join(__dirname, '../', 'assets/index.html');
       filePath.must.be(realPath);
+    });
+  });
+
+  describe('.name()', function() {
+    it('must get the basename of the file', function() {
+      var filename = get.name(test.script);
+      filename.must.be('script.js');
     });
   });
 });
