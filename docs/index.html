@@ -193,9 +193,10 @@ the project&#39;s <code>geno.json</code> file, if it exists.</p>
             
             <div class="content"><div class='highlight'><pre>Geno.prototype.compile = <span class="keyword">function</span>(config, data, callback) {
   <span class="keyword">var</span> content = nunjucks.renderString(data, config),
+      output  = (config.output || get.path(process.cwd(), <span class="string">'site'</span>)),
       style   = (config.stylesheet || get.lib(<span class="string">'template/style.css'</span>)),
-      output  = (config.output || get.path(process.cwd(), <span class="string">'site'</span>));
-  <span class="keyword">this</span>.generate(content, output, style, <span class="keyword">function</span>(err) {
+      script  = (config.javascript || <span class="literal">false</span>);
+  <span class="keyword">this</span>.generate(content, output, style, script, <span class="keyword">function</span>(err) {
       <span class="keyword">if</span> (err) { <span class="keyword">return</span> callback(err); }
       <span class="keyword">return</span> callback(<span class="literal">null</span>);
   });
@@ -211,30 +212,30 @@ the project&#39;s <code>geno.json</code> file, if it exists.</p>
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
               <h4>Geno.prototype.generate</h4>
-<p>Generate the site by creating the <code>output</code> directory, saving
-the <code>index.html</code> file and copying the <code>style.css</code> file.</p>
+<p>Generate the site by creating the <code>output</code> directory and saving
+the <code>index.html</code> file.</p>
 <ul>
 <li><code>content</code>  is a string.</li>
 <li><code>output</code>   is a string.</li>
 <li><code>style</code>    is a string.</li>
+<li><code>script</code>   is a string.</li>
 <li><code>callback</code> is a function.</li>
 </ul>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>Geno.prototype.generate = <span class="keyword">function</span>(content, output, style, callback) {
-  <span class="keyword">var</span> index = get.path(output, <span class="string">'index.html'</span>),
-      css   = get.path(output, <span class="string">'style.css'</span>);
+            <div class="content"><div class='highlight'><pre>Geno.prototype.generate = <span class="keyword">function</span>(content, output, style, script, callback) {
+  <span class="keyword">var</span> index = get.path(output, <span class="string">'index.html'</span>);
   file.mkDir(output, <span class="keyword">function</span>(err) {
     <span class="keyword">if</span> (err) { <span class="keyword">return</span> callback(err); }
     file.save(index, content, <span class="keyword">function</span>() {
       <span class="keyword">if</span> (err) { <span class="keyword">return</span> callback(err); }
-      file.copy(style, css, <span class="keyword">function</span>(err) {
+      <span class="keyword">this</span>.assets(output, style, script, <span class="keyword">function</span>(err) {
         <span class="keyword">if</span> (err) { <span class="keyword">return</span> callback(err); }
         <span class="keyword">return</span> callback(<span class="literal">null</span>);
       });
-    });
-  });
+    }.bind(<span class="keyword">this</span>));
+  }.bind(<span class="keyword">this</span>));
 };</pre></div></div>
             
         </li>
@@ -243,8 +244,45 @@ the <code>index.html</code> file and copying the <code>style.css</code> file.</p
         <li id="section-10">
             <div class="annotation">
               
-              <div class="pilwrap for-h3">
+              <div class="pilwrap for-h4">
                 <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <h4>Geno.prototype.assets</h4>
+<p>Copy all of the assets, ie. the <code>style</code> and <code>script</code> files.</p>
+<ul>
+<li><code>output</code>   is a string.</li>
+<li><code>style</code>    is a string.</li>
+<li><code>script</code>   is a string.</li>
+<li><code>callback</code> is a function.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>Geno.prototype.assets = <span class="keyword">function</span>(output, style, script, callback) {
+  <span class="keyword">var</span> css = get.path(output, <span class="string">'style.css'</span>),
+      src = get.name(script),
+      js  = get.path(output, src);
+  file.copy(style, css, <span class="keyword">function</span>(err) {
+    <span class="keyword">if</span> (err) { <span class="keyword">return</span> callback(err); }
+    <span class="keyword">if</span> (!script) {
+      <span class="keyword">return</span> callback(<span class="literal">null</span>);
+    } <span class="keyword">else</span> {
+      file.copy(script, js, <span class="keyword">function</span>(err) {
+        <span class="keyword">if</span> (err) { <span class="keyword">return</span> callback(err); }
+        <span class="keyword">return</span> callback(<span class="literal">null</span>);
+      });
+    }
+  });
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h3">
+                <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
               <h3>Exports</h3>
 <p>Export <code>Geno</code>.</p>
@@ -256,11 +294,11 @@ the <code>index.html</code> file and copying the <code>style.css</code> file.</p
         </li>
         
         
-        <li id="section-11">
+        <li id="section-12">
             <div class="annotation">
               
               <div class="pilwrap for-h2">
-                <a class="pilcrow" href="#section-11">&#182;</a>
+                <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
               <h2>utils/get.js</h2>
 
@@ -269,11 +307,11 @@ the <code>index.html</code> file and copying the <code>style.css</code> file.</p
         </li>
         
         
-        <li id="section-12">
+        <li id="section-13">
             <div class="annotation">
               
               <div class="pilwrap for-h3">
-                <a class="pilcrow" href="#section-12">&#182;</a>
+                <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
               <h3>Modules</h3>
 <p>Import the required modules.</p>
@@ -285,11 +323,11 @@ the <code>index.html</code> file and copying the <code>style.css</code> file.</p
         </li>
         
         
-        <li id="section-13">
+        <li id="section-14">
             <div class="annotation">
               
               <div class="pilwrap for-h3">
-                <a class="pilcrow" href="#section-13">&#182;</a>
+                <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
               <h3>Get</h3>
 <p>The constructor.</p>
@@ -301,14 +339,14 @@ the <code>index.html</code> file and copying the <code>style.css</code> file.</p
         </li>
         
         
-        <li id="section-14">
+        <li id="section-15">
             <div class="annotation">
               
               <div class="pilwrap for-h4">
-                <a class="pilcrow" href="#section-14">&#182;</a>
+                <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
               <h4>Get.prototype.path</h4>
-<p>Return the full path of <code>filename</code>.</p>
+<p>Return the full path of the <code>filename</code>.</p>
 <ul>
 <li><code>directory</code> is a string.</li>
 <li><code>filename</code> is a string.</li>
@@ -323,11 +361,11 @@ the <code>index.html</code> file and copying the <code>style.css</code> file.</p
         </li>
         
         
-        <li id="section-15">
+        <li id="section-16">
             <div class="annotation">
               
               <div class="pilwrap for-h4">
-                <a class="pilcrow" href="#section-15">&#182;</a>
+                <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
               <h4>Get.prototype.lib</h4>
 <p>Return the full path to the module library.</p>
@@ -344,11 +382,32 @@ the <code>index.html</code> file and copying the <code>style.css</code> file.</p
         </li>
         
         
-        <li id="section-16">
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap for-h4">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <h4>Get.prototype.name</h4>
+<p>Return the base name of the <code>filename</code>.</p>
+<ul>
+<li><code>filename</code> is a string.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>Get.prototype.name = <span class="keyword">function</span>(filename) {
+  <span class="keyword">return</span> path.basename(filename);
+};</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
             <div class="annotation">
               
               <div class="pilwrap for-h3">
-                <a class="pilcrow" href="#section-16">&#182;</a>
+                <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <h3>Exports</h3>
 <p>Export <code>Get</code>.</p>
@@ -360,11 +419,11 @@ the <code>index.html</code> file and copying the <code>style.css</code> file.</p
         </li>
         
         
-        <li id="section-17">
+        <li id="section-19">
             <div class="annotation">
               
               <div class="pilwrap for-h2">
-                <a class="pilcrow" href="#section-17">&#182;</a>
+                <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
               <h2>utils/extend.js</h2>
 
@@ -373,11 +432,11 @@ the <code>index.html</code> file and copying the <code>style.css</code> file.</p
         </li>
         
         
-        <li id="section-18">
+        <li id="section-20">
             <div class="annotation">
               
               <div class="pilwrap for-h3">
-                <a class="pilcrow" href="#section-18">&#182;</a>
+                <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
               <h3>Extend</h3>
 <p>The constructor.</p>
@@ -389,11 +448,11 @@ the <code>index.html</code> file and copying the <code>style.css</code> file.</p
         </li>
         
         
-        <li id="section-19">
+        <li id="section-21">
             <div class="annotation">
               
               <div class="pilwrap for-h4">
-                <a class="pilcrow" href="#section-19">&#182;</a>
+                <a class="pilcrow" href="#section-21">&#182;</a>
               </div>
               <h4>Extend.prototype.obj</h4>
 <p>Return a single object by combining two into one.</p>
@@ -418,11 +477,11 @@ the <code>index.html</code> file and copying the <code>style.css</code> file.</p
         </li>
         
         
-        <li id="section-20">
+        <li id="section-22">
             <div class="annotation">
               
               <div class="pilwrap for-h3">
-                <a class="pilcrow" href="#section-20">&#182;</a>
+                <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
               <h3>Exports</h3>
 <p>Export <code>Extend</code>.</p>
@@ -434,11 +493,11 @@ the <code>index.html</code> file and copying the <code>style.css</code> file.</p
         </li>
         
         
-        <li id="section-21">
+        <li id="section-23">
             <div class="annotation">
               
               <div class="pilwrap for-h2">
-                <a class="pilcrow" href="#section-21">&#182;</a>
+                <a class="pilcrow" href="#section-23">&#182;</a>
               </div>
               <h2>utils/file.js</h2>
 
@@ -447,11 +506,11 @@ the <code>index.html</code> file and copying the <code>style.css</code> file.</p
         </li>
         
         
-        <li id="section-22">
+        <li id="section-24">
             <div class="annotation">
               
               <div class="pilwrap for-h3">
-                <a class="pilcrow" href="#section-22">&#182;</a>
+                <a class="pilcrow" href="#section-24">&#182;</a>
               </div>
               <h3>Modules</h3>
 <p>Import the required modules.</p>
@@ -466,11 +525,11 @@ the <code>index.html</code> file and copying the <code>style.css</code> file.</p
         </li>
         
         
-        <li id="section-23">
+        <li id="section-25">
             <div class="annotation">
               
               <div class="pilwrap for-h3">
-                <a class="pilcrow" href="#section-23">&#182;</a>
+                <a class="pilcrow" href="#section-25">&#182;</a>
               </div>
               <h3>File</h3>
 <p>The constructor.</p>
@@ -482,11 +541,11 @@ the <code>index.html</code> file and copying the <code>style.css</code> file.</p
         </li>
         
         
-        <li id="section-24">
+        <li id="section-26">
             <div class="annotation">
               
               <div class="pilwrap for-h4">
-                <a class="pilcrow" href="#section-24">&#182;</a>
+                <a class="pilcrow" href="#section-26">&#182;</a>
               </div>
               <h4>File.prototype.read</h4>
 <p>Read the <code>file</code> (synchronously) and return the data.</p>
@@ -509,11 +568,11 @@ the <code>index.html</code> file and copying the <code>style.css</code> file.</p
         </li>
         
         
-        <li id="section-25">
+        <li id="section-27">
             <div class="annotation">
               
               <div class="pilwrap for-h4">
-                <a class="pilcrow" href="#section-25">&#182;</a>
+                <a class="pilcrow" href="#section-27">&#182;</a>
               </div>
               <h4>File.prototype.save</h4>
 <p>Save the <code>file</code> and <code>content</code> (synchronously).</p>
@@ -537,11 +596,11 @@ the <code>index.html</code> file and copying the <code>style.css</code> file.</p
         </li>
         
         
-        <li id="section-26">
+        <li id="section-28">
             <div class="annotation">
               
               <div class="pilwrap for-h4">
-                <a class="pilcrow" href="#section-26">&#182;</a>
+                <a class="pilcrow" href="#section-28">&#182;</a>
               </div>
               <h4>File.prototype.copy</h4>
 <p>Copy the <code>target</code> to the <code>destination</code> (synchronously).</p>
@@ -565,11 +624,11 @@ the <code>index.html</code> file and copying the <code>style.css</code> file.</p
         </li>
         
         
-        <li id="section-27">
+        <li id="section-29">
             <div class="annotation">
               
               <div class="pilwrap for-h4">
-                <a class="pilcrow" href="#section-27">&#182;</a>
+                <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
               <h4>File.prototype.exists</h4>
 <p>Check if the <code>path</code> exists (synchronously).</p>
@@ -588,11 +647,11 @@ the <code>index.html</code> file and copying the <code>style.css</code> file.</p
         </li>
         
         
-        <li id="section-28">
+        <li id="section-30">
             <div class="annotation">
               
               <div class="pilwrap for-h4">
-                <a class="pilcrow" href="#section-28">&#182;</a>
+                <a class="pilcrow" href="#section-30">&#182;</a>
               </div>
               <h4>File.prototype.mkDir</h4>
 <p>Create the <code>path</code> (synchronously).</p>
@@ -617,11 +676,11 @@ the <code>index.html</code> file and copying the <code>style.css</code> file.</p
         </li>
         
         
-        <li id="section-29">
+        <li id="section-31">
             <div class="annotation">
               
               <div class="pilwrap for-h3">
-                <a class="pilcrow" href="#section-29">&#182;</a>
+                <a class="pilcrow" href="#section-31">&#182;</a>
               </div>
               <h3>Exports</h3>
 <p>Export <code>File</code>.</p>
