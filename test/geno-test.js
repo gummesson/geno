@@ -11,8 +11,10 @@ var must     = require('must'),
 describe('Geno', function() {
   describe('.build()', function() {
     it('must build the site', function(done) {
-      geno.build(function() {
+      geno.build(function(err) {
+        if (err) { throw err; }
         fsExists('site/index.html').must.be.true();
+        fsExists('site/style.css').must.be.true();
         done();
       });
     });
@@ -27,13 +29,6 @@ describe('Geno', function() {
         if (err) { throw err; }
         data.must.exist();
         tags.must.be.false();
-        done();
-      });
-    });
-
-    it('must copy the assets', function(done) {
-      geno.build(function() {
-        fsExists('site/style.css').must.be.true();
         done();
       });
     });
