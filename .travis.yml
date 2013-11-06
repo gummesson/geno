@@ -5,4 +5,4 @@ before_install:
   - npm install -g grunt-cli
 notifications:
   email:
-    - ellengummesson+geno@gmail.com
+    - ellengummesson+travis-ci@gmail.com
